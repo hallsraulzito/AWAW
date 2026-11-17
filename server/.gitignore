@@ -1,0 +1,15 @@
+# Variáveis de ambiente e credenciais
+.env
+.env.*
+
+# Dependências
+node_modules/
+
+# Arquivos de compilação
+dist/
+
+# Logs
+*.log
+
+# Configurações locais do VS Code
+.vscode/

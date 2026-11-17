@@ -1,0 +1,13 @@
+AWAW - VERSAO UNIFICADA (INTEGRACAO INICIAL)
+
+Base: projeto do usuário.
+Adições do parceiro: feed/comunidade, posts, comentários, upload de imagens, login, componentes do feed, seed e seguir artistas.
+Preservado do usuário: contratação, propostas, conversas, mensagens, portfólios e páginas Katz/Mazz.
+
+IMPORTANTE:
+- Arquivos .env não foram incluídos. Crie server/.env com MONGODB_URI e demais variáveis necessárias.
+- node_modules, .git e arquivos de build não foram incluídos.
+- Rode npm install na raiz e npm install dentro de server.
+- A integração precisa ser validada com npm run build na raiz e npx tsc --noEmit dentro de server.
+- O upload salva arquivos localmente em server/uploads; em hospedagem, configure armazenamento persistente.
+- Não considere esta integração testada em execução até validar as rotas com o banco conectado.
