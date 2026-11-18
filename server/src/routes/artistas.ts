@@ -1,8 +1,8 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { User } from "../models/User";
-import { Portfolio } from "../models/Portfolio";
-import { exigirLogin, loginOpcional } from "../middleware/auth";
+import { User } from "../models/User.js";
+import { Portfolio } from "../models/Portfolio.js";
+import { exigirLogin, loginOpcional } from "../middleware/auth.js";
 
 const router = Router();
 

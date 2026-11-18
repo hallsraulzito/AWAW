@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
-import { User } from "../models/User";
-import { gerarToken } from "../middleware/auth";
+import { User } from "../models/User.js";
+import { gerarToken } from "../middleware/auth.js";
 
 const router = Router();
 

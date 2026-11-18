@@ -1,9 +1,9 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { Proposta } from "../models/Proposta";
-import { Conversa } from "../models/Conversa";
-import { Contratacao } from "../models/Contratacao";
-import { exigirLogin } from "../middleware/auth";
+import { Proposta } from "../models/Proposta.js";
+import { Conversa } from "../models/Conversa.js";
+import { Contratacao } from "../models/Contratacao.js";
+import { exigirLogin } from "../middleware/auth.js";
 
 const conversaRouter = Router();
 const propostaRouter = Router();

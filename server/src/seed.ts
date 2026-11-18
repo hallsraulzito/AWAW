@@ -3,8 +3,8 @@
 import "dotenv/config";
 import mongoose from "mongoose";
 import { conectarBanco } from "./db";
-import { User } from "./models/User";
-import { Post } from "./models/Post";
+import { User } from "./models/User.js";
+import { Post } from "./models/Post.js";
 
 const artistas = [
   { nome: "Marina Luz", email: "marina@awaw.dev", categoria: "Ilustração", cidade: "Santos" },
