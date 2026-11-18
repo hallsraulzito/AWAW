@@ -1,22 +1,24 @@
+
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 import { ImagePlus, X, Loader2 } from "lucide-react";
 import Avatar from "./Avatar";
-import { api } from "@/lib/api";
+import { api, getToken } from "@/lib/api";
 import type { UserProfile } from "@/hooks/useAuth";
 import type { Post } from "./util";
 import { upload } from "@vercel/blob/client";
-import { getToken } from "@/lib/api";
 
 const MAX_TEXTO = 500;
 const MAX_IMAGENS = 4;
 const MAX_MB = 8;
 const TIPOS = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 
+const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
+
 interface Anexo {
   arquivo: File;
-  previa: string; // endereço temporário só para mostrar a miniatura
+  previa: string;
 }
 
 interface Props {
@@ -31,9 +33,9 @@ export default function Composer({ usuario, onPublicado }: Props) {
   const [erro, setErro] = useState("");
   const inputArquivo = useRef<HTMLInputElement>(null);
 
-  // Ao sair da página, libera da memória as miniaturas que ainda estiverem abertas
   const anexosAtuais = useRef<Anexo[]>([]);
   anexosAtuais.current = anexos;
+
   useEffect(
     () => () =>
       anexosAtuais.current.forEach((a) => URL.revokeObjectURL(a.previa)),
@@ -67,19 +69,22 @@ export default function Composer({ usuario, onPublicado }: Props) {
 
   function escolherImagens(e: ChangeEvent<HTMLInputElement>) {
     const escolhidas = Array.from(e.target.files || []);
-    e.target.value = ""; // permite escolher o mesmo arquivo de novo depois
+    e.target.value = "";
     setErro("");
 
     const validas = escolhidas.filter(
       (f) => TIPOS.includes(f.type) && f.size <= MAX_MB * 1024 * 1024,
     );
-    if (validas.length < escolhidas.length)
+
+    if (validas.length < escolhidas.length) {
       setErro(`Use imagens JPG, PNG, WEBP ou GIF de até ${MAX_MB} MB.`);
+    }
 
     const vagas = MAX_IMAGENS - anexos.length;
     const novas = validas
       .slice(0, vagas)
       .map((arquivo) => ({ arquivo, previa: URL.createObjectURL(arquivo) }));
+
     setAnexos((atuais) => [...atuais, ...novas]);
   }
 
@@ -102,11 +107,15 @@ export default function Composer({ usuario, onPublicado }: Props) {
           throw new Error("Faça login novamente para publicar.");
         }
 
+        if (!API_BASE) {
+          throw new Error("Endereço do servidor não configurado.");
+        }
+
         midias = await Promise.all(
           anexos.map(async ({ arquivo }) => {
             const blob = await upload(arquivo.name, arquivo, {
               access: "public",
-              handleUploadUrl: "/api/upload",
+              handleUploadUrl: `${API_BASE}/api/upload`,
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -194,6 +203,7 @@ export default function Composer({ usuario, onPublicado }: Props) {
               <ImagePlus className="h-5 w-5" />
             </button>
           </div>
+
           <div className="flex items-center gap-3">
             {texto.length > 0 && (
               <span
@@ -202,6 +212,7 @@ export default function Composer({ usuario, onPublicado }: Props) {
                 {restante}
               </span>
             )}
+
             <button
               onClick={publicar}
               disabled={vazio || restante < 0 || enviando}
