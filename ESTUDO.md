@@ -378,3 +378,58 @@ Abra o **MongoDB Compass**, conecte com a mesma `MONGODB_URI` e olhe a coleção
 ## 16. Para pesquisar depois
 
 Validação com **zod**, **rate limit** no login (`express-rate-limit`), **helmet** (cabeçalhos de segurança), upload de imagens (Cloudinary ou S3, guardando só a URL no banco), refresh token, e deploy (Render/Railway para o back, Vercel/Netlify para o front, Atlas para o banco).
+
+---
+
+# PARTE 3: Marketplace geral + marketplace de cada artista
+
+## 20. Mapa das telas
+
+| URL | Tela | Arquivo |
+|---|---|---|
+| `/marketplace` | Marketplace geral (todos os artistas, busca e filtros) | `marketplace/MarketplaceGeral.tsx` |
+| `/katz/marketplace`, `/mazz/marketplace`... | Marketplace de um artista | `marketplace/ArtistaMarketplace.tsx` |
+| `/marketplace/katz-obra1` | Página de uma obra | `marketplace/ProdutoDetalhe.tsx` |
+| `/katz/marketplace/obra1` | Mesma página de obra (formato antigo da Katz continua funcionando) | `marketplace/ProdutoDetalhe.tsx` |
+
+A aba **Marketplace** foi adicionada à Navbar (computador e celular) e ao menu lateral do feed. Os botões "Comprar obras" dos perfis da Katz e do Mazz já apontavam para `/katz/marketplace` e `/mazz/marketplace`, e agora essas páginas existem.
+
+## 21. Como o código está organizado
+
+- **`catalogo.ts`: fonte única dos dados.** Lista de artistas, lista de produtos e as funções de consulta (`listarProdutos`, `obterProduto`...). Todas as telas leem daqui. Os produtos da Katz são montados a partir de `Katz/Obras.ts`, então título, descrição e preço da obra continuam sendo editados num lugar só.
+- **`ProdutoCard.tsx`: o cartão da obra**, reaproveitado nas três telas.
+- **`PainelFiltros.tsx`: filtros** de artista, categoria e faixa de preço.
+- **`rotas.tsx`: todas as rotas do marketplace.** As rotas de cada artista são geradas a partir da lista `ARTISTAS`.
+
+## 22. Conceitos novos
+
+**Fonte única de verdade.** Antes, a Katz tinha os preços escritos em dois lugares (a lista do marketplace e a página da obra) e os valores estavam diferentes. Agora existe um catálogo só. Se você precisar mudar algo, muda em um lugar.
+
+**Filtros na URL** (`MarketplaceGeral.tsx`). Busca, artista, categoria, preço e ordenação ficam em `?q=...&artista=katz&ordem=menor-preco` (via `useSearchParams`). Vantagens: dá para compartilhar um link já filtrado, o botão "voltar" funciona e qualquer página pode apontar para um filtro, por exemplo `/marketplace?artista=katz`. O `replace: true` evita que cada letra digitada vire uma entrada no histórico do navegador.
+
+**Busca sem acento** (`normalizar`). `normalize("NFD")` separa a letra do acento e a regex remove o acento. Assim, "ilustracao" encontra "Ilustração".
+
+**Rotas geradas por dados** (`rotas.tsx`). Um `flatMap` sobre `ARTISTAS` cria `/slug/marketplace` para cada artista. Usamos uma rota por artista (e não `/:artista/marketplace`) porque rota fixa tem prioridade sobre rota com parâmetro e não conflita com `/katz/:obraId`.
+
+**Estado vazio.** O Mazz ainda não tem obras cadastradas, então `/mazz/marketplace` mostra uma mensagem amigável em vez de uma tela quebrada.
+
+## 23. Como adicionar um artista e uma obra
+
+1. Em `catalogo.ts`, adicione um objeto em `ARTISTAS` (o `slug` vira a URL).
+2. Adicione as obras em `PRODUTOS` (há um exemplo comentado no `produtosMazz`). Coloque as imagens em `public/img/<Artista>/`.
+3. Pronto: `/<slug>/marketplace` já existe, o artista aparece no marketplace geral e nos filtros.
+
+## 24. Passo seguinte: ligar ao MongoDB
+
+O model `Produto` já existe no servidor (`server/src/models/Produto.ts`) e tem os mesmos campos do catálogo. Para migrar:
+1. Criar `server/src/routes/produtos.ts` (listar com filtros, buscar por id, criar/editar/apagar do próprio artista) e registrar em `server.ts`.
+2. Reescrever só as funções de `catalogo.ts` para chamarem `api("/api/produtos...")` (elas passam a ser assíncronas).
+3. Atualizar as telas para carregar os dados em um `useEffect` (como o `Feed.tsx` faz).
+
+## 25. Exercícios
+
+1. **Fácil:** adicione duas obras de exemplo para o Mazz e veja o marketplace dele.
+2. **Fácil:** adicione a ordenação "Mais recentes" (precisa de um campo `criadoEm` no produto).
+3. **Médio:** mostre, na página da obra, o botão "Favoritar" usando o model `Favorito`.
+4. **Médio:** crie um carrinho em `localStorage` (ou em contexto React) com contador na Navbar.
+5. **Difícil:** crie a rota `POST /api/pedidos` que recebe os itens do carrinho, confere os preços **no servidor** e grava o `Pedido`.
