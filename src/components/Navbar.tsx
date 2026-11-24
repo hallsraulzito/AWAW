@@ -27,6 +27,9 @@ function Navbar() {
             <Link to="/artists" className="text-neutral-700 hover:text-purple-600 font-medium text-sm transition-colors">
               Artistas
             </Link>
+            <Link to="/marketplace" className="text-neutral-700 hover:text-purple-600 font-medium text-sm transition-colors">
+              Marketplace
+            </Link>
             <Link to="/feed" className="text-neutral-700 hover:text-purple-600 font-medium text-sm transition-colors">
               Comunidade
             </Link>
@@ -89,6 +92,7 @@ function Navbar() {
         <div className="md:hidden bg-white border-t border-neutral-100 px-6 py-6 space-y-4 shadow-lg">
           <Link to="/" className="block text-neutral-700 font-medium py-1.5" onClick={() => setMobileMenuOpen(false)}>Início</Link>
           <Link to="/artists" className="block text-neutral-700 font-medium py-1.5" onClick={() => setMobileMenuOpen(false)}>Artistas</Link>
+          <Link to="/marketplace" className="block text-neutral-700 font-medium py-1.5" onClick={() => setMobileMenuOpen(false)}>Marketplace</Link>
           <Link to="/feed" className="block text-neutral-700 font-medium py-1.5" onClick={() => setMobileMenuOpen(false)}>Comunidade</Link>
           <Link to="/companies" className="block text-neutral-700 font-medium py-1.5" onClick={() => setMobileMenuOpen(false)}>Empresas</Link>
           <Link to="/social-projects" className="block text-neutral-700 font-medium py-1.5" onClick={() => setMobileMenuOpen(false)}>Projetos Sociais</Link>

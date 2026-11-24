@@ -1,11 +1,12 @@
 import { Link, useLocation } from "react-router-dom"
-import { Home, Palette, Building2, HeartHandshake, Plus, LogIn, LogOut } from "lucide-react"
+import { Home, Palette, ShoppingBag, Building2, HeartHandshake, Plus, LogIn, LogOut } from "lucide-react"
 import Avatar from "./Avatar"
 import type { UserProfile } from "@/hooks/useAuth"
 
 const ITENS = [
   { to: "/feed", rotulo: "Início", Icone: Home },
   { to: "/artists", rotulo: "Artistas", Icone: Palette },
+  { to: "/marketplace", rotulo: "Marketplace", Icone: ShoppingBag },
   { to: "/companies", rotulo: "Empresas", Icone: Building2 },
   { to: "/social-projects", rotulo: "Projetos Sociais", Icone: HeartHandshake },
 ]

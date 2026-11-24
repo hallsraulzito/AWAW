@@ -11,12 +11,11 @@ import SignUp from "@/pages/SingUp";
 import Katz from "./Katz/Katz.tsx";
 import Obra from "./Katz/Obras.tsx";
 import { obras } from "./Katz/Obras.ts";
-import Marketplace from "./Katz/Marketplace.tsx";
-import ObraMarketplace from "./Katz/ObrasMarketplace.tsx";
 
 import Mazz from "./Mazz/Mazz.tsx";
 import Feed from "@/pages/Feed";
 import Login from "@/pages/Login";
+import { rotasMarketplace } from "@/marketplace/rotas";
 
 function ObraKatz() {
   const { obraId } = useParams();
@@ -48,9 +47,10 @@ export const routes: RouteObject[] = [
   { path: "/login", element: <Login /> },
   { path: "/feed", element: <Feed /> },
 
+  // Marketplace geral (/marketplace) e o de cada artista (/katz/marketplace, /mazz/marketplace...)
+  ...rotasMarketplace,
+
   { path: "/katz", element: <Katz /> },
-  { path: "/katz/marketplace", element: <Marketplace /> },
-  { path: "/katz/marketplace/:obraId", element: <ObraMarketplace /> },
   { path: "/katz/:obraId", element: <ObraKatz /> },
 
   { path: "/mazz", element: <Mazz /> },
